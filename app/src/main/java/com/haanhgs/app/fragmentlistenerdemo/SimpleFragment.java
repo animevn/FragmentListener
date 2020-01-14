@@ -9,13 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static com.haanhgs.app.fragmentlistenerdemo.Status.No;
 import static com.haanhgs.app.fragmentlistenerdemo.Status.None;
 import static com.haanhgs.app.fragmentlistenerdemo.Status.Yes;

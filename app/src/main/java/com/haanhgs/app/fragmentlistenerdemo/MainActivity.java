@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.haanhgs.app.fragmentlistenerdemo.Status.None;
 
 public class MainActivity extends AppCompatActivity implements StatusChanged {
