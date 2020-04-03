@@ -1,4 +1,4 @@
-package com.haanhgs.app.fragmentlistenerdemo;
+package com.haanhgs.app.fragmentlistener;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,9 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import static com.haanhgs.app.fragmentlistenerdemo.Status.No;
-import static com.haanhgs.app.fragmentlistenerdemo.Status.None;
-import static com.haanhgs.app.fragmentlistenerdemo.Status.Yes;
+import static com.haanhgs.app.fragmentlistener.Status.No;
+import static com.haanhgs.app.fragmentlistener.Status.None;
+import static com.haanhgs.app.fragmentlistener.Status.Yes;
 
 public class SimpleFragment extends Fragment {
 
