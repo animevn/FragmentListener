@@ -4,34 +4,36 @@ import android.os.Bundle;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Button;
-
 import com.haanhgs.app.fragmentlistener.R;
-import com.haanhgs.app.fragmentlistener.model.Status;
-
-import androidx.annotation.NonNull;
+import com.haanhgs.app.fragmentlistener.viewmodel.MyViewModel;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements StatusDidChange {
+public class MainActivity extends AppCompatActivity{
 
     @BindView(R.id.bnOpen)
     Button bnOpen;
 
-    private static final String STATUS = "status";
-    private static final String CHOICE = "choice";
-    private boolean isFragmentOn = false;
-    private int statusChoice = Status.None.state;
+    private MyViewModel viewModel;
+    private boolean isOpen;
 
 
-    @Override
-    public void onChange(int choice) {
-        statusChoice = choice;
+    private void initViewModel(){
+        viewModel = new ViewModelProvider(this).get(MyViewModel.class);
+        viewModel.getData().observe(this, model -> {
+            isOpen = model.isOpen();
+            if (model.isOpen()){
+                bnOpen.setText(getResources().getString(R.string.close));
+            }else {
+                bnOpen.setText(getResources().getString(R.string.open));
+            }
+        });
     }
-
-
 
     private void setFullScreenInLandscape(){
         int rotation = getWindowManager().getDefaultDisplay().getRotation();
@@ -42,59 +44,45 @@ public class MainActivity extends AppCompatActivity implements StatusDidChange {
         }
     }
 
-    private void loadInstanceState(Bundle bundle){
-        if (bundle != null){
-            isFragmentOn = bundle.getBoolean(STATUS);
-            if (isFragmentOn) bnOpen.setText(getResources().getString(R.string.close));
-            statusChoice = bundle.getInt(CHOICE);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setFullScreenInLandscape();
-        loadInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(STATUS, isFragmentOn);
-        outState.putInt(CHOICE, statusChoice);
+        initViewModel();
     }
 
     private void openFragment(){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        SimpleFragment simpleFragment = SimpleFragment.getInstance(statusChoice);
-        ft.add(R.id.flFragment, simpleFragment);
-        ft.addToBackStack(null);
-        ft.commit();
-        bnOpen.setText(getResources().getString(R.string.close));
-        isFragmentOn = true;
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("fragment");
+        if (fragment == null){
+            SimpleFragment simpleFragment = new SimpleFragment();
+            ft.add(R.id.flFragment, simpleFragment, "fragment");
+            ft.commit();
+        }else {
+            ft.attach(fragment);
+        }
     }
 
     private void closeFragment(){
-        SimpleFragment fragment = (SimpleFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.flFragment);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("fragment");
         if (fragment != null){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.remove(fragment);
             ft.commit();
-            bnOpen.setText(getResources().getString(R.string.open));
-            isFragmentOn = false;
         }
     }
 
+
     @OnClick(R.id.bnOpen)
     public void onViewClicked() {
-        if (isFragmentOn){
+        if (isOpen){
             closeFragment();
         }else {
             openFragment();
         }
+        viewModel.toggleFragment();
     }
 
 }

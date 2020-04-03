@@ -8,18 +8,18 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.haanhgs.app.fragmentlistener.R;
 import com.haanhgs.app.fragmentlistener.model.Status;
-
+import com.haanhgs.app.fragmentlistener.viewmodel.MyViewModel;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SimpleFragment extends Fragment {
-
 
     private static final String CHOICE = "choice";
     @BindView(R.id.rbnYes)
@@ -30,52 +30,46 @@ public class SimpleFragment extends Fragment {
     RadioGroup rgFragment;
     @BindView(R.id.tvFragment)
     TextView tvFragment;
-    private StatusDidChange delegate;
-    private int rbChoice = Status.None.state;
 
-    public static SimpleFragment getInstance(int choice) {
-        SimpleFragment simpleFragment = new SimpleFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(CHOICE, choice);
-        simpleFragment.setArguments(bundle);
-        return simpleFragment;
-    }
+    private FragmentActivity activity;
+    private MyViewModel viewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
-        if (context instanceof StatusDidChange) {
-            delegate = (StatusDidChange) context;
-        } else {
-            throw new ClassCastException(
-                    context.toString() + getResources().getString(R.string.exception_message)
-            );
-        }
+        activity = getActivity();
     }
 
-    private void handleRadioGroup() {
-        if (getArguments() != null && getArguments().containsKey(CHOICE)) {
-            rbChoice = getArguments().getInt(CHOICE);
-            if (rbChoice == Status.Yes.state) {
+    private void initViewModel(){
+        viewModel = new ViewModelProvider(activity).get(MyViewModel.class);
+        viewModel.getData().observe(this, model -> {
+            if (model.getStatus() == Status.Yes){
+                tvFragment.setText(getResources().getString(R.string.yes_message));
+            }else if (model.getStatus() == Status.No){
+                tvFragment.setText(getResources().getString(R.string.no_message));
+            }
+            rgFragment.refreshDrawableState();
+        });
+    }
+
+    private void initRadioGroup(){
+        if (viewModel.getData().getValue() != null){
+            Status status = viewModel.getData().getValue().getStatus();
+            if (status == Status.Yes) {
                 rgFragment.check(R.id.rbnYes);
-            } else if (rbChoice == Status.No.state) {
+            }else if (status == Status.No){
                 rgFragment.check(R.id.rbnNo);
             }
-            delegate.onChange(rbChoice);
         }
     }
 
     private void handleRadioButtons() {
         rgFragment.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbnYes){
-                tvFragment.setText(getResources().getString(R.string.yes_message));
-                rbChoice = Status.Yes.state;
+                viewModel.setStatus(Status.Yes);
             }else if (checkedId == R.id.rbnNo){
-                tvFragment.setText(getResources().getString(R.string.no_message));
-                rbChoice = Status.No.state;
+                viewModel.setStatus(Status.No);
             }
-            delegate.onChange(rbChoice);
         });
     }
 
@@ -87,7 +81,8 @@ public class SimpleFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout, container, false);
         ButterKnife.bind(this, view);
-        handleRadioGroup();
+        initViewModel();
+        initRadioGroup();
         handleRadioButtons();
         return view;
     }

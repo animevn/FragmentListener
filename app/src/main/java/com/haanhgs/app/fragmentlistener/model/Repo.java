@@ -20,8 +20,8 @@ public class Repo {
         liveData.setValue(model);
     }
 
-    public void setOpen(boolean open){
-        model.setOpen(open);
+    public void toggleFragment(){
+        model.setOpen(!model.isOpen());
         liveData.setValue(model);
     }
 

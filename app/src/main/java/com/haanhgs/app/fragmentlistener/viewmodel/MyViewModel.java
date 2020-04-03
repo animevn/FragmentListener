@@ -25,8 +25,8 @@ public class MyViewModel extends AndroidViewModel {
         repo.setStatus(status);
     }
 
-    public void setOpen(boolean open){
-        repo.setOpen(open);
+    public void toggleFragment(){
+        repo.toggleFragment();
     }
 
 }
