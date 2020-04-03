@@ -1,4 +1,4 @@
-package com.haanhgs.app.fragmentlistener;
+package com.haanhgs.app.fragmentlistener.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.haanhgs.app.fragmentlistener.R;
+import com.haanhgs.app.fragmentlistener.model.Status;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;

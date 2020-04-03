@@ -1,4 +1,4 @@
-package com.haanhgs.app.fragmentlistener;
+package com.haanhgs.app.fragmentlistener.model;
 
 public enum Status {
     Yes(1), No(2), None(0);

@@ -1,10 +1,12 @@
-package com.haanhgs.app.fragmentlistener;
+package com.haanhgs.app.fragmentlistener.view;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Button;
+
+import com.haanhgs.app.fragmentlistener.R;
+import com.haanhgs.app.fragmentlistener.model.Status;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements StatusDidChange{
+public class MainActivity extends AppCompatActivity implements StatusDidChange {
 
     @BindView(R.id.bnOpen)
     Button bnOpen;
