@@ -1,7 +1,10 @@
 package com.haanhgs.app.fragmentlistener.view;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Surface;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.Button;
 import com.haanhgs.app.fragmentlistener.R;
@@ -35,12 +38,22 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    @SuppressWarnings("deprecation")
     private void setFullScreenInLandscape(){
-        int rotation = getWindowManager().getDefaultDisplay().getRotation();
-        if (rotation == Surface.ROTATION_270 || rotation == Surface.ROTATION_90){
-            if (getSupportActionBar() != null) getSupportActionBar().hide();
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (getDisplay() != null){
+            int rotation = getDisplay().getRotation();
+            if (rotation == Surface.ROTATION_270 || rotation == Surface.ROTATION_90){
+                if (getSupportActionBar() != null) getSupportActionBar().hide();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+                    final WindowInsetsController controller = getWindow().getInsetsController();
+                    if (controller != null){
+                        controller.hide(WindowInsets.Type.statusBars());
+                    }
+                }else {
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
+            }
         }
     }
 
